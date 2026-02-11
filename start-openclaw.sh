@@ -219,12 +219,10 @@ if (process.env.CF_AI_GATEWAY_MODEL) {
     }
 }
 
-// OpenRouter configuration with automatic model routing
-// Routes tasks to the cheapest capable model:
-//   quick/default → Haiku (fast, cheap)
-//   coding → Sonnet (balanced)
-//   reasoning → Opus (most capable)
-//   longContext → Sonnet (good context handling)
+// OpenRouter provider registration
+// Only registers the provider and available models. Model selection and
+// routing is configured by the user via the admin UI or SaaS dashboard.
+// Default set to Haiku (cheapest) — user can change anytime from dashboard.
 if (process.env.OPENROUTER_API_KEY) {
     config.models = config.models || {};
     config.models.providers = config.models.providers || {};
@@ -241,14 +239,7 @@ if (process.env.OPENROUTER_API_KEY) {
     config.agents = config.agents || {};
     config.agents.defaults = config.agents.defaults || {};
     config.agents.defaults.model = { primary: 'openrouter/anthropic/claude-3-5-haiku-20241022' };
-    config.agents.defaults.modelRouting = {
-        default: 'openrouter/anthropic/claude-3-5-haiku-20241022',
-        coding: 'openrouter/anthropic/claude-sonnet-4-5',
-        reasoning: 'openrouter/anthropic/claude-opus-4-6',
-        quick: 'openrouter/anthropic/claude-3-5-haiku-20241022',
-        longContext: 'openrouter/anthropic/claude-sonnet-4-5'
-    };
-    console.log('OpenRouter configured with model routing (default: haiku, coding: sonnet, reasoning: opus)');
+    console.log('OpenRouter registered (default: haiku). Model routing configurable from dashboard.');
 }
 
 // Telegram configuration

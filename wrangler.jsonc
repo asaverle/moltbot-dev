@@ -69,7 +69,8 @@
   },
   // Environment variables (non-secret)
   "vars": {
-    "DEV_MODE": "true"
+    "DEV_MODE": "true",
+    "SANDBOX_SLEEP_AFTER": "5m"
   },
   // Note: CF_ACCOUNT_ID should be set via `wrangler secret put CF_ACCOUNT_ID`
   // Secrets to configure via `wrangler secret put`:

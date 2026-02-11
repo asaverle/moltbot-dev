@@ -219,6 +219,38 @@ if (process.env.CF_AI_GATEWAY_MODEL) {
     }
 }
 
+// OpenRouter configuration with automatic model routing
+// Routes tasks to the cheapest capable model:
+//   quick/default → Haiku (fast, cheap)
+//   coding → Sonnet (balanced)
+//   reasoning → Opus (most capable)
+//   longContext → Sonnet (good context handling)
+if (process.env.OPENROUTER_API_KEY) {
+    config.models = config.models || {};
+    config.models.providers = config.models.providers || {};
+    config.models.providers.openrouter = {
+        baseUrl: 'https://openrouter.ai/api/v1',
+        apiKey: process.env.OPENROUTER_API_KEY,
+        api: 'openai-completions',
+        models: [
+            { id: 'anthropic/claude-3-5-haiku-20241022', name: 'haiku-3.5', contextWindow: 200000, maxTokens: 8192 },
+            { id: 'anthropic/claude-sonnet-4-5', name: 'sonnet-4.5', contextWindow: 200000, maxTokens: 8192 },
+            { id: 'anthropic/claude-opus-4-6', name: 'opus-4.6', contextWindow: 200000, maxTokens: 8192 }
+        ]
+    };
+    config.agents = config.agents || {};
+    config.agents.defaults = config.agents.defaults || {};
+    config.agents.defaults.model = { primary: 'openrouter/anthropic/claude-3-5-haiku-20241022' };
+    config.agents.defaults.modelRouting = {
+        default: 'openrouter/anthropic/claude-3-5-haiku-20241022',
+        coding: 'openrouter/anthropic/claude-sonnet-4-5',
+        reasoning: 'openrouter/anthropic/claude-opus-4-6',
+        quick: 'openrouter/anthropic/claude-3-5-haiku-20241022',
+        longContext: 'openrouter/anthropic/claude-sonnet-4-5'
+    };
+    console.log('OpenRouter configured with model routing (default: haiku, coding: sonnet, reasoning: opus)');
+}
+
 // Telegram configuration
 // Overwrite entire channel object to drop stale keys from old R2 backups
 // that would fail OpenClaw's strict config validation (see #47)

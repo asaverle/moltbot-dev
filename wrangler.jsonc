@@ -67,6 +67,10 @@
   "browser": {
     "binding": "BROWSER",
   },
+  // Environment variables (non-secret)
+  "vars": {
+    "DEV_MODE": "true"
+  },
   // Note: CF_ACCOUNT_ID should be set via `wrangler secret put CF_ACCOUNT_ID`
   // Secrets to configure via `wrangler secret put`:
   //

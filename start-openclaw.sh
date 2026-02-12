@@ -102,7 +102,7 @@ fi
 # ONBOARD (only if no config exists yet)
 # ============================================================
 if [ ! -f "$CONFIG_FILE" ]; then
-    echo "No existing config found, running openclaw onboard..."
+    echo "No existing config found..."
 
     AUTH_ARGS=""
     if [ -n "$CLOUDFLARE_AI_GATEWAY_API_KEY" ] && [ -n "$CF_AI_GATEWAY_ACCOUNT_ID" ] && [ -n "$CF_AI_GATEWAY_GATEWAY_ID" ]; then
@@ -116,16 +116,24 @@ if [ ! -f "$CONFIG_FILE" ]; then
         AUTH_ARGS="--auth-choice openai-api-key --openai-api-key $OPENAI_API_KEY"
     fi
 
-    openclaw onboard --non-interactive --accept-risk \
-        --mode local \
-        $AUTH_ARGS \
-        --gateway-port 18789 \
-        --gateway-bind lan \
-        --skip-channels \
-        --skip-skills \
-        --skip-health
-
-    echo "Onboard completed"
+    if [ -n "$AUTH_ARGS" ]; then
+        echo "Running openclaw onboard with direct provider key..."
+        openclaw onboard --non-interactive --accept-risk \
+            --mode local \
+            $AUTH_ARGS \
+            --gateway-port 18789 \
+            --gateway-bind lan \
+            --skip-channels \
+            --skip-skills \
+            --skip-health
+        echo "Onboard completed"
+    else
+        # No direct provider key (e.g., using OpenRouter only).
+        # Create minimal config — the patch step below will configure the provider.
+        echo "No direct provider key — creating minimal config for OpenRouter..."
+        echo '{}' > "$CONFIG_FILE"
+        echo "Minimal config created"
+    fi
 else
     echo "Using existing config"
 fi
@@ -220,12 +228,18 @@ if (process.env.CF_AI_GATEWAY_MODEL) {
 }
 
 // OpenRouter provider registration
-// Only registers the provider and available models. Model selection and
-// routing is configured by the user via the admin UI or SaaS dashboard.
-// Default set to Haiku (cheapest) — user can change anytime from dashboard.
+// Registers OpenRouter as the sole provider. When OpenRouter is active,
+// direct Anthropic/OpenAI providers are removed to prevent bypassing.
+// The default model is set via DEFAULT_MODEL env var (configurable from
+// dashboard/wrangler.jsonc) — no hardcoded model selection.
 if (process.env.OPENROUTER_API_KEY) {
     config.models = config.models || {};
     config.models.providers = config.models.providers || {};
+
+    // Remove direct providers — all calls go through OpenRouter
+    delete config.models.providers.anthropic;
+    delete config.models.providers.openai;
+
     config.models.providers.openrouter = {
         baseUrl: 'https://openrouter.ai/api/v1',
         apiKey: process.env.OPENROUTER_API_KEY,
@@ -236,10 +250,13 @@ if (process.env.OPENROUTER_API_KEY) {
             { id: 'anthropic/claude-opus-4-6', name: 'opus-4.6', contextWindow: 200000, maxTokens: 8192 }
         ]
     };
+
+    // Default model: configurable via env var, falls back to Haiku
+    const defaultModel = process.env.DEFAULT_MODEL || 'openrouter/anthropic/claude-3-5-haiku-20241022';
     config.agents = config.agents || {};
     config.agents.defaults = config.agents.defaults || {};
-    config.agents.defaults.model = { primary: 'openrouter/anthropic/claude-3-5-haiku-20241022' };
-    console.log('OpenRouter registered (default: haiku). Model routing configurable from dashboard.');
+    config.agents.defaults.model = { primary: defaultModel };
+    console.log('OpenRouter: sole provider. Default model: ' + defaultModel + ' (change via DEFAULT_MODEL env var or dashboard)');
 }
 
 // Telegram configuration

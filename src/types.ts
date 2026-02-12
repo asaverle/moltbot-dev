@@ -20,6 +20,7 @@ export interface MoltbotEnv {
   ANTHROPIC_BASE_URL?: string;
   OPENAI_API_KEY?: string;
   OPENROUTER_API_KEY?: string; // OpenRouter unified API key (single key for 30+ models)
+  DEFAULT_MODEL?: string; // Default model ID (e.g., 'openrouter/anthropic/claude-3-5-haiku-20241022')
   MOLTBOT_GATEWAY_TOKEN?: string; // Gateway token (mapped to OPENCLAW_GATEWAY_TOKEN for container)
   DEV_MODE?: string; // Set to 'true' for local dev (skips CF Access auth + openclaw device pairing)
   E2E_TEST_MODE?: string; // Set to 'true' for E2E tests (skips CF Access auth but keeps device pairing)

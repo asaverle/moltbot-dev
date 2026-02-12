@@ -245,14 +245,55 @@ if (process.env.OPENROUTER_API_KEY) {
         apiKey: process.env.OPENROUTER_API_KEY,
         api: 'openai-completions',
         models: [
-            { id: 'anthropic/claude-3-5-haiku-20241022', name: 'haiku-3.5', contextWindow: 200000, maxTokens: 8192 },
-            { id: 'anthropic/claude-sonnet-4-5', name: 'sonnet-4.5', contextWindow: 200000, maxTokens: 8192 },
-            { id: 'anthropic/claude-opus-4-6', name: 'opus-4.6', contextWindow: 200000, maxTokens: 8192 }
+            // --- FREE TIER ---
+            { id: 'openrouter/free', name: 'auto-free', contextWindow: 200000, maxTokens: 8192 },
+            { id: 'openrouter/pony-alpha', name: 'pony-alpha', contextWindow: 200000, maxTokens: 131000 },
+            { id: 'google/gemini-2.5-flash:free', name: 'gemini-2.5-flash-free', contextWindow: 1000000, maxTokens: 8192 },
+            { id: 'google/gemini-3-flash-preview:free', name: 'gemini-3-flash-free', contextWindow: 1000000, maxTokens: 8192 },
+            { id: 'meta-llama/llama-3.3-70b-instruct:free', name: 'llama-3.3-70b-free', contextWindow: 131000, maxTokens: 8192 },
+            { id: 'meta-llama/llama-3.1-405b:free', name: 'llama-3.1-405b-free', contextWindow: 131000, maxTokens: 8192 },
+            { id: 'deepseek/deepseek-r1-0528:free', name: 'deepseek-r1-free', contextWindow: 164000, maxTokens: 8192 },
+            { id: 'openai/gpt-oss-120b:free', name: 'gpt-oss-120b-free', contextWindow: 131000, maxTokens: 8192 },
+            { id: 'xiaomi/mimo-v2-flash:free', name: 'mimo-v2-flash-free', contextWindow: 262000, maxTokens: 8192 },
+            { id: 'mistralai/devstral-2512:free', name: 'devstral-2-free', contextWindow: 262000, maxTokens: 8192 },
+            { id: 'qwen/qwen3-coder:free', name: 'qwen3-coder-free', contextWindow: 262000, maxTokens: 8192 },
+            { id: 'nvidia/nemotron-3-nano-30b-a3b:free', name: 'nemotron-3-nano-free', contextWindow: 256000, maxTokens: 8192 },
+            // --- ULTRA-CHEAP ($) ---
+            { id: 'mistralai/devstral-2512', name: 'devstral-2', contextWindow: 262000, maxTokens: 8192 },
+            { id: 'qwen/qwen3-30b-a3b', name: 'qwen3-30b', contextWindow: 262000, maxTokens: 8192 },
+            { id: 'z-ai/glm-4.7-flash', name: 'glm-4.7-flash', contextWindow: 202000, maxTokens: 8192 },
+            { id: 'qwen/qwen3-coder-next', name: 'qwen3-coder-next', contextWindow: 262000, maxTokens: 8192 },
+            { id: 'bytedance-seed/seed-1.6-flash', name: 'seed-1.6-flash', contextWindow: 262000, maxTokens: 8192 },
+            { id: 'xiaomi/mimo-v2-flash', name: 'mimo-v2-flash', contextWindow: 262000, maxTokens: 8192 },
+            { id: 'qwen/qwq-32b', name: 'qwq-32b', contextWindow: 65000, maxTokens: 8192 },
+            { id: 'deepseek/deepseek-v3.2', name: 'deepseek-v3.2', contextWindow: 164000, maxTokens: 8192 },
+            { id: 'deepseek/deepseek-v3.2-speciale', name: 'deepseek-v3.2-speciale', contextWindow: 164000, maxTokens: 8192 },
+            { id: 'x-ai/grok-4.1-fast', name: 'grok-4.1-fast', contextWindow: 2000000, maxTokens: 8192 },
+            { id: 'qwen/qwen3-235b-a22b', name: 'qwen3-235b', contextWindow: 262000, maxTokens: 8192 },
+            { id: 'z-ai/glm-4.7', name: 'glm-4.7', contextWindow: 202000, maxTokens: 8192 },
+            { id: 'minimax/minimax-m2.1', name: 'minimax-m2.1', contextWindow: 196000, maxTokens: 8192 },
+            // --- MID-RANGE ($$) ---
+            { id: 'google/gemini-3-flash-preview', name: 'gemini-3-flash', contextWindow: 1000000, maxTokens: 8192 },
+            { id: 'mistralai/mistral-large-2512', name: 'mistral-large-3', contextWindow: 262000, maxTokens: 8192 },
+            { id: 'moonshotai/kimi-k2.5', name: 'kimi-k2.5', contextWindow: 262000, maxTokens: 8192 },
+            { id: 'deepseek/deepseek-r1', name: 'deepseek-r1', contextWindow: 64000, maxTokens: 8192 },
+            { id: 'z-ai/glm-5', name: 'glm-5', contextWindow: 202000, maxTokens: 8192 },
+            { id: 'anthropic/claude-haiku-4.5', name: 'claude-haiku-4.5', contextWindow: 1000000, maxTokens: 8192 },
+            { id: 'qwen/qwen3-max-thinking', name: 'qwen3-max-thinking', contextWindow: 262000, maxTokens: 8192 },
+            { id: 'openai/gpt-5.1', name: 'gpt-5.1', contextWindow: 400000, maxTokens: 8192 },
+            { id: 'openai/gpt-5.2', name: 'gpt-5.2', contextWindow: 400000, maxTokens: 8192 },
+            { id: 'google/gemini-3-pro-preview', name: 'gemini-3-pro', contextWindow: 1000000, maxTokens: 8192 },
+            // --- PREMIUM ($$$) ---
+            { id: 'openai/gpt-5.3-codex', name: 'gpt-5.3-codex', contextWindow: 256000, maxTokens: 8192 },
+            { id: 'anthropic/claude-sonnet-4.5', name: 'claude-sonnet-4.5', contextWindow: 200000, maxTokens: 8192 },
+            { id: 'anthropic/claude-opus-4.5', name: 'claude-opus-4.5', contextWindow: 200000, maxTokens: 8192 },
+            { id: 'anthropic/claude-opus-4.6', name: 'claude-opus-4.6', contextWindow: 1000000, maxTokens: 8192 },
+            { id: 'openai/gpt-5.2-pro', name: 'gpt-5.2-pro', contextWindow: 400000, maxTokens: 8192 }
         ]
     };
 
     // Default model: configurable via env var, falls back to Haiku
-    const defaultModel = process.env.DEFAULT_MODEL || 'openrouter/anthropic/claude-3-5-haiku-20241022';
+    const defaultModel = process.env.DEFAULT_MODEL || 'openrouter/deepseek/deepseek-v3.2';
     config.agents = config.agents || {};
     config.agents.defaults = config.agents.defaults || {};
     config.agents.defaults.model = { primary: defaultModel };
